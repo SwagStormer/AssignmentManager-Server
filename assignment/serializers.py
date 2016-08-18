@@ -1,24 +1,32 @@
 from rest_framework import serializers
 from models import MyUser, Schedule, Assignment
+from importance import importance_calc
 
 
 class AssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignment
-        exclude = ('importance', 'daily_time_amount', 'schedule', )
+        exclude = ('importance', 'daily_time_amount',)
 
     def create(self, validated_data):
-        request = self.context.get('request')
-        s = Schedule.objects.filter(user=request.user)
-        s.filter(name=validated_data["schedule"])
+        time_estimate = validated_data["time_estimate"]
+        due_date = validated_data["due_date"]
+        i = importance_calc(due_date, time_estimate)
         assignment = Assignment(
+            importance=i[0],
+            daily_time_amount=i[1],
             name=validated_data["name"],
-            time_estimate=validated_data["time_estimate"],
-            due_date=validated_data["due_date"],
-            schedule=s
+            time_estimate=time_estimate,
+            due_date=due_date,
+            schedule=validated_data["schedule"]
         )
         assignment.save()
         return assignment
+
+
+class AssignmentReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Assignment
 
 
 class MyUserSerializer(serializers.ModelSerializer):
