@@ -6,7 +6,7 @@ from importance import importance_calc
 class AssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignment
-        exclude = ('importance', 'daily_time_amount',)
+        exclude = ('importance', 'daily_time_amount', 'done_today',)
 
     def create(self, validated_data):
         time_estimate = validated_data["time_estimate"]
@@ -18,7 +18,8 @@ class AssignmentSerializer(serializers.ModelSerializer):
             name=validated_data["name"],
             time_estimate=time_estimate,
             due_date=due_date,
-            schedule=validated_data["schedule"]
+            schedule=validated_data["schedule"],
+            done_today=False
         )
         assignment.save()
         return assignment

@@ -14,16 +14,16 @@ from datetime import datetime as d
 # Return (importance, daily time amount)
 def importance_calc(due_date, time_estimate):
     today = d.now().date()
-    if due_date < today:
+    if due_date <= today:
         print(0)
         return 1, time_estimate
     else:
         day_difference = due_date - today
         day_difference = day_difference.days
         time_per_day = time_estimate/day_difference
-
+        print(time_per_day)
         if day_difference <= 1:
-            return 1, time_estimate
+            return 1, time_per_day
         elif time_per_day >= 30:
             return 2, time_per_day
         elif 20 <= time_per_day < 30:

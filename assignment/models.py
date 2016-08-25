@@ -20,6 +20,7 @@ class Assignment(models.Model):
     name = models.CharField(max_length=30)
     time_estimate = models.IntegerField()
     importance = models.IntegerField(null=True, blank=True)
+    done_today = models.BooleanField(default=False)
     due_date = models.DateField()
     daily_time_amount = models.IntegerField(null=True, blank=True)
     schedule = models.ForeignKey(Schedule)

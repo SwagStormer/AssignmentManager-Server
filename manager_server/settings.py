@@ -28,6 +28,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+DATE_INPUT_FORMATS = ('%d-%m-%Y','%Y-%m-%d')
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -129,9 +131,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-DATE_FORMAT = "%d/%m/%Y"
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
