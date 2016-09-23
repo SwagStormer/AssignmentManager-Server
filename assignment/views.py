@@ -3,14 +3,14 @@ from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 from importance import importance_calc
 from rest_framework.exceptions import ValidationError
-from serializers import AssignmentSerializer, AssignmentReadSerializer, ScheduleSerializer, MyUserSerializer, MyUserReadSerializer
-from models import Assignment, Schedule, MyUser
+from serializers import TaskSerializer, TaskReadSerializer, DocketSerializer, MyUserSerializer, MyUserReadSerializer
+from models import Docket, Task, MyUser
 # Create your views here.
 
 
-class AssignmentViewSet(viewsets.ModelViewSet):
-    serializer_class = AssignmentSerializer
-    queryset = Assignment.objects.all()
+class TaskViewSet(viewsets.ModelViewSet):
+    serializer_class = TaskSerializer
+    queryset = Task.objects.all()
 
     @detail_route(methods=["POST"])
     def done_today(self, request, pk=None):
@@ -18,44 +18,46 @@ class AssignmentViewSet(viewsets.ModelViewSet):
         if not time_amount:
             if time_amount is not 0:
                 raise ValidationError("Wai you do this")
-        assignment = Assignment.objects.filter(id=pk)[0]
-
-        if assignment.daily_time_amount is time_amount:
-            assignment.time_estimate -= assignment.daily_time_amount
-        elif assignment.time_estimate - time_amount is 0:
-            assignment.delete()
-            return Response(status=200)
+        task = Task.objects.filter(id=pk)[0]
+        if task.done_today:
+            raise ValidationError("Task is finished for the day!")
         else:
-            assignment.time_estimate -= time_amount
-            i = importance_calc(assignment.due_date, assignment.time_estimate)
-            assignment.daily_time_amount = i[1]
-            assignment.importance = i[0]
+            if task.daily_time_amount is time_amount:
+                task.time_estimate -= task.daily_time_amount
+            elif task.time_estimate - time_amount is 0:
+                task.delete()
+                return Response({"Swag":"Done"}, status=200)
+            else:
+                task.time_estimate -= time_amount
+                i = importance_calc(task.due_date, task.time_estimate)
+                task.daily_time_amount = i[1]
+                task.importance = i[0]
 
-        assignment.done_today = True
-        assignment.save()
-        return Response(status=200)
+            task.done_today = True
+            task.save()
+            return Response({"Swag": "Done"}, status=200)
 
     def get_serializer_class(self):
         if self.request.method == "POST":
-            return AssignmentSerializer
+            return TaskSerializer
         else:
-            return AssignmentReadSerializer
+            return TaskReadSerializer
 
     def get_queryset(self):
-        s = Schedule.objects.filter(user=self.request.user)
+        d = Docket.objects.filter(user=self.request.user)
         return_array = []
-        for schedule in s:
-            a = Assignment.objects.filter(schedule=schedule, done_today=False)
+        for docket in d:
+            a = Task.objects.filter(docket=docket, done_today=False)
             return_array += a
         return return_array
 
 
-class ScheduleViewSet(viewsets.ModelViewSet):
-    serializer_class = ScheduleSerializer
-    queryset = Schedule.objects.all()
+class DocketViewSet(viewsets.ModelViewSet):
+    serializer_class = DocketSerializer
+    queryset = Docket.objects.all()
 
     def get_queryset(self):
-        return Schedule.objects.filter(user=self.request.user.id)
+        return Docket.objects.filter(user=self.request.user.id)
 
 
 class MyUserViewSet(viewsets.ModelViewSet):

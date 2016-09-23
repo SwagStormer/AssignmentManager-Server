@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Assignment, MyUser, Schedule
+from .models import Task, MyUser, Docket
 # Register your models here.
 
 
@@ -10,11 +10,11 @@ class UserAdmin(admin.ModelAdmin):
 admin.site.register(MyUser, UserAdmin)
 
 
-class AssignmentAdmin(admin.ModelAdmin):
+class TaskAdmin(admin.ModelAdmin):
     pass
-admin.site.register(Assignment,AssignmentAdmin)
+admin.site.register(Task, TaskAdmin)
 
 
-class ScheduleAdmin(admin.ModelAdmin):
+class DocketAdmin(admin.ModelAdmin):
     pass
-admin.site.register(Schedule, ScheduleAdmin)
+admin.site.register(Docket, DocketAdmin)

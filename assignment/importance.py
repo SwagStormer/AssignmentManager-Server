@@ -21,14 +21,18 @@ def importance_calc(due_date, time_estimate):
         day_difference = due_date - today
         day_difference = day_difference.days
         time_per_day = time_estimate/day_difference
-        print(time_per_day)
         if day_difference <= 1:
+            print(1)
             return 1, time_per_day
         elif time_per_day >= 30:
+            print(2)
             return 2, time_per_day
         elif 20 <= time_per_day < 30:
+            print(3)
             return 3, time_per_day
         elif 15 <= time_per_day < 20:
+            print(4)
             return 4, time_per_day
         elif time_per_day < 15:
+            print(5)
             return 5, time_per_day
