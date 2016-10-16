@@ -3,6 +3,7 @@ from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 from importance import importance_calc
 from rest_framework.exceptions import ValidationError
+from django.contrib.auth.models import AnonymousUser
 from serializers import TaskSerializer, TaskReadSerializer, DocketSerializer, MyUserSerializer, MyUserReadSerializer
 from models import Docket, Task, MyUser
 # Create your views here.
@@ -44,12 +45,16 @@ class TaskViewSet(viewsets.ModelViewSet):
             return TaskReadSerializer
 
     def get_queryset(self):
-        d = Docket.objects.filter(user=self.request.user)
-        return_array = []
-        for docket in d:
-            a = Task.objects.filter(docket=docket, done_today=False)
-            return_array += a
-        return return_array
+        if self.request.user.is_anonymous():
+            return ValidationError("DERP")
+        else:
+            print(self.request.user)
+            d = Docket.objects.filter(user=self.request.user)
+            return_array = []
+            for docket in d:
+                a = Task.objects.filter(docket=docket, done_today=False)
+                return_array += a
+            return return_array
 
 
 class DocketViewSet(viewsets.ModelViewSet):
