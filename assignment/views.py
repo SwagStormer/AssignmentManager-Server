@@ -3,9 +3,8 @@ from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 from importance import importance_calc
 from rest_framework.exceptions import ValidationError
-from django.contrib.auth.models import AnonymousUser
-from serializers import TaskSerializer, TaskReadSerializer, DocketSerializer, MyUserSerializer, MyUserReadSerializer
-from models import Docket, Task, MyUser
+from serializers import TaskSerializer, TaskReadSerializer, DocketSerializer, MyUserSerializer, MyUserReadSerializer, VersionSerializer
+from models import Docket, Task, MyUser, Version
 # Create your views here.
 
 
@@ -27,7 +26,7 @@ class TaskViewSet(viewsets.ModelViewSet):
                 task.time_estimate -= task.daily_time_amount
             elif task.time_estimate - time_amount is 0:
                 task.delete()
-                return Response({"Swag":"Done"}, status=200)
+                return Response({"Status": "Deleted"}, status=200)
             else:
                 task.time_estimate -= time_amount
                 i = importance_calc(task.due_date, task.time_estimate)
@@ -36,7 +35,7 @@ class TaskViewSet(viewsets.ModelViewSet):
 
             task.done_today = True
             task.save()
-            return Response({"Swag": "Done"}, status=200)
+            return Response({"Status": "Finished"}, status=200)
 
     def get_serializer_class(self):
         if self.request.method == "POST":
@@ -78,3 +77,7 @@ class MyUserViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return self.queryset.filter(id=self.request.user.id)
 
+
+class VersionViewSet(viewsets.ModelViewSet):
+    serializer_class = VersionSerializer
+    queryset = Version.objects.all()

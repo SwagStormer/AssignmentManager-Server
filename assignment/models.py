@@ -26,5 +26,9 @@ class Task(models.Model):
     docket = models.ForeignKey(Docket)
 
 
+class Version(models.Model):
+    number = models.IntegerField()
+    message = models.CharField(max_length=200)
+
 
 

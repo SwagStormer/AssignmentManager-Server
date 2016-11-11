@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from assignment.models import Assignment
+from assignment.models import Task
 from assignment.importance import importance_calc
 
 
@@ -7,17 +7,15 @@ class Command(BaseCommand):
     help = "Update the list of needed items on the todo list"
 
     def handle(self, *args, **options):
-        print(Assignment.objects.all())
-        for assignment in Assignment.objects.all():
-            if assignment.time_estimate is 0:
-                assignment.delete()
+        for task in Task.objects.all():
+            if task.time_estimate is 0:
+                task.delete()
             else:
-                if assignment.done_today:
-                    assignment.done_today = False
+                if task.done_today:
+                    task.done_today = False
                 else:
-                    i = importance_calc(assignment.due_date, assignment.time_estimate)
-                    assignment.importance = i[0]
-                    assignment.daily_time_amount = i[1]
-                assignment.save()
-            print(assignment)
+                    i = importance_calc(task.due_date, task.time_estimate)
+                    task.importance = i[0]
+                    task.daily_time_amount = i[1]
+                task.save()
         self.stdout.write("Done!")

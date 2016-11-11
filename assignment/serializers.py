@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from django.utils import timezone
 
-from models import MyUser, Docket, Task
+from models import MyUser, Docket, Task, Version
 from importance import importance_calc
 
 
@@ -14,6 +15,7 @@ class TaskSerializer(serializers.ModelSerializer):
         time_estimate = validated_data["time_estimate"]
         due_date = validated_data["due_date"]
         i = importance_calc(due_date, time_estimate)
+        print(timezone.now())
         docket = Task(
             importance=i[0],
             daily_time_amount=i[1],
@@ -68,3 +70,13 @@ class DocketSerializer(serializers.ModelSerializer):
         else:
             docket.save()
             return docket
+
+
+class VersionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Version
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        if not request.user.is_staff:
+            raise ValidationError("Only Admins can do this")
