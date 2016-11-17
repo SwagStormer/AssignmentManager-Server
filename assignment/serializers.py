@@ -9,7 +9,6 @@ from importance import importance_calc
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        exclude = ()
 
     def create(self, validated_data):
         time_estimate = validated_data["time_estimate"]

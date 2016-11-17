@@ -1,6 +1,6 @@
 from rest_framework import viewsets
-from .serializers import ScheduleSerializer, PeriodSerializer
-from .models import Schedule, Period
+from .serializers import ScheduleSerializer, SpanSerializer
+from .models import Schedule, Span
 # Create your views here.
 
 
@@ -12,6 +12,6 @@ class ScheduleViewSet(viewsets.ModelViewSet):
         return Schedule.objects.filter(user=self.request.user)
 
 
-class PeriodViewSet(viewsets.ModelViewSet):
-    serializer_class = PeriodSerializer
-    queryset = Period.objects.all()
+class SpanViewSet(viewsets.ModelViewSet):
+    serializer_class = SpanSerializer
+    queryset = Span.objects.all()

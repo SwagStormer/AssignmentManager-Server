@@ -9,9 +9,15 @@ class Schedule(models.Model):
     name = models.CharField(max_length=20)
     start_time = models.TimeField()
 
+    def __str__(self):
+        return '%s' % self.name
 
-class Period(models.Model):
+
+class Span(models.Model):
     schedule = models.ForeignKey(Schedule)
     name = models.CharField(max_length=30)
     start_time = models.TimeField()
     end_time = models.TimeField()
+
+    def __str__(self):
+        return '%s' % self.name

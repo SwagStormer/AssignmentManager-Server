@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from .models import Schedule, Period
+from .models import Schedule, Span
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
@@ -9,6 +9,6 @@ class ScheduleSerializer(serializers.ModelSerializer):
         model = Schedule
 
 
-class PeriodSerializer(serializers.ModelSerializer):
+class SpanSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Period
+        model = Span

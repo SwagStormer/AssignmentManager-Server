@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 from importance import importance_calc
@@ -46,6 +46,10 @@ class TaskViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_anonymous():
             return ValidationError("DERP")
+        elif self.request.query_params.get('docket'):
+            q = int(self.request.query_params.get('docket'))
+            d = Docket.objects.filter(id=q, user=self.request.user)
+            return Task.objects.filter(docket=d)
         else:
             print(self.request.user)
             d = Docket.objects.filter(user=self.request.user)
