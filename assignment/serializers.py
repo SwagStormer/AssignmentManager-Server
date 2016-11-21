@@ -1,12 +1,10 @@
-from pprint import pprint
-
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from django.utils import timezone
 
 from .models import MyUser, Docket, Task, Version
 from .importance import importance_calc
-from .scraper.scraper import request_grades
+from assignment.scraper import request_grades
 
 
 class TaskSerializer(serializers.ModelSerializer):
