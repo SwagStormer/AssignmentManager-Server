@@ -1,9 +1,12 @@
+from pprint import pprint
+
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from django.utils import timezone
 
-from models import MyUser, Docket, Task, Version
-from importance import importance_calc
+from .models import MyUser, Docket, Task, Version
+from .importance import importance_calc
+from .scraper.scraper import request_grades
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -56,19 +59,41 @@ class MyUserReadSerializer(serializers.ModelSerializer):
 class DocketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Docket
-        exclude = ('user', )
+        exclude = ('user',)
 
     def create(self, validated_data):
         request = self.context.get('request')
-        docket = Docket(
-            name=validated_data["name"],
-            user=request.user
-        )
-        if len(Docket.objects.filter(user=request.user, name=docket.name)) is not 0:
-            raise ValidationError("Already have that name")
+
+        if request.user.sis_username and request.user.sis_password:
+            dockets = []
+            class_list = request_grades(request.user.sis_username,
+                                        request.user.sis_password, False)
+            for index, element in enumerate(class_list[1]):
+                d = Docket(
+                    name=class_list[0][index],
+                    grade=class_list[1][index],
+                    user=request.user
+                )
+                if len(Docket.objects.filter(user=request.user,
+                                             name=class_list[0][index])) is 0:
+                    d.save()
+                    dockets.append(d)
+            print(len(dockets))
+            if len(dockets) is 0:
+                raise ValidationError("You've done this before!")
+            else:
+                return dockets[0]
         else:
-            docket.save()
-            return docket
+            docket = Docket(
+                name=validated_data["name"],
+                user=request.user
+            )
+            if len(Docket.objects.filter(user=request.user,
+                                         name=docket.name)) is not 0:
+                raise ValidationError("Already have that name")
+            else:
+                docket.save()
+                return docket
 
 
 class VersionSerializer(serializers.ModelSerializer):

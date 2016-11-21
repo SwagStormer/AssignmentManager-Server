@@ -8,11 +8,14 @@ from django.contrib.auth.models import AbstractUser
 
 
 class MyUser(AbstractUser):
+    sis_username = models.CharField(max_length=20, null=True)
+    sis_password = models.CharField(max_length=40, null=True)
     pass
 
 
 class Docket(models.Model):
     name = models.CharField(max_length=30)
+    grade = models.CharField(max_length=10, null=True)
     user = models.ForeignKey(MyUser)
 
     def __str__(self):

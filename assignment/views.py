@@ -1,10 +1,10 @@
 from rest_framework import viewsets, filters
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
-from importance import importance_calc
+from .importance import importance_calc
 from rest_framework.exceptions import ValidationError
-from serializers import TaskSerializer, TaskReadSerializer, DocketSerializer, MyUserSerializer, MyUserReadSerializer, VersionSerializer
-from models import Docket, Task, MyUser, Version
+from .serializers import TaskSerializer, TaskReadSerializer, DocketSerializer, MyUserSerializer, MyUserReadSerializer, VersionSerializer
+from .models import Docket, Task, MyUser, Version
 # Create your views here.
 
 
