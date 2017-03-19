@@ -1,10 +1,12 @@
-from rest_framework import viewsets, filters
-from rest_framework.decorators import detail_route
+from rest_framework import viewsets
+from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
 from .importance import importance_calc
-from rest_framework.exceptions import ValidationError
-from .serializers import TaskSerializer, TaskReadSerializer, DocketSerializer, MyUserSerializer, MyUserReadSerializer, VersionSerializer
-from .models import Docket, Task, MyUser, Version
+from rest_framework.exceptions import ValidationError, NotAuthenticated
+from .serializers import TaskSerializer, TaskReadSerializer, CourseSerializer, MyUserSerializer, MyUserReadSerializer, VersionSerializer
+from .models import Course, Task, MyUser, Version
+from assignment.scraper import request_grades
+from assignment.management.commands.update_grades import update_grades
 # Create your views here.
 
 
@@ -45,27 +47,52 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_anonymous():
-            return ValidationError("DERP")
-        elif self.request.query_params.get('docket'):
-            q = int(self.request.query_params.get('docket'))
-            d = Docket.objects.filter(id=q, user=self.request.user)
-            return Task.objects.filter(docket=d)
+            raise NotAuthenticated()
+        elif self.request.query_params.get('Course'):
+            q = int(self.request.query_params.get('Course'))
+            d = Course.objects.filter(id=q, user=self.request.user)
+            return Task.objects.filter(Course=d)
         else:
             print(self.request.user)
-            d = Docket.objects.filter(user=self.request.user)
+            d = Course.objects.filter(user=self.request.user)
             return_array = []
-            for docket in d:
-                a = Task.objects.filter(docket=docket, done_today=False)
+            for course in d:
+                a = Task.objects.filter(Course=Course, done_today=False)
                 return_array += a
             return return_array
 
 
-class DocketViewSet(viewsets.ModelViewSet):
-    serializer_class = DocketSerializer
-    queryset = Docket.objects.all()
+class CourseViewSet(viewsets.ModelViewSet):
+    serializer_class = CourseSerializer
+    queryset = Course.objects.all()
+
+    @list_route(methods=["POST"])
+    def initialize(self, request):
+        courses = []
+        class_list = request_grades(request.user.sis_username,
+                                    request.user.sis_password, False)
+        print(class_list)
+        for index, element in enumerate(class_list[1]):
+            d = Course(
+                name=class_list[0][index],
+                grade=class_list[1][index],
+                user=request.user
+            )
+            if len(Course.objects.filter(user=request.user,
+                                         name=class_list[0][index])) is 0:
+                    d.save()
+                    courses.append(d)
+        return Response({"message": "Finished!"})
+
+    @list_route(methods=["POST"])
+    def update_grades(self, request):
+        courses = Course.objects.filter(user=request.user.id)
+        serializer = self.get_serializer(courses, many=True)
+        update_grades(request.user)
+        return Response(serializer.data)
 
     def get_queryset(self):
-        return Docket.objects.filter(user=self.request.user.id)
+        return Course.objects.filter(user=self.request.user.id)
 
 
 class MyUserViewSet(viewsets.ModelViewSet):

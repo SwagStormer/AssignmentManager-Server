@@ -7,13 +7,15 @@ from django.db import models
 
 class Schedule(models.Model):
     name = models.CharField(max_length=20)
+    normal_schedule = models.BooleanField(default=True)
     start_time = models.TimeField()
+    end_time = models.TimeField()
 
     def __str__(self):
         return '%s' % self.name
 
 
-class Span(models.Model):
+class Period(models.Model):
     schedule = models.ForeignKey(Schedule)
     name = models.CharField(max_length=30)
     start_time = models.TimeField()

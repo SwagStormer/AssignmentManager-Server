@@ -18,16 +18,18 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from rest_framework import routers
 from rest_framework.authtoken import views
-from assignment.views import DocketViewSet, TaskViewSet, MyUserViewSet, VersionViewSet
-from bell.views import ScheduleViewSet, SpanViewSet
+from assignment.views import CourseViewSet, TaskViewSet, MyUserViewSet, VersionViewSet
+from bell.views import ScheduleViewSet, PeriodViewSet
+from schoolpage.views import AnnouncementViewSet
 
 router = routers.DefaultRouter()
 router.register(r'tasks', TaskViewSet)
-router.register(r'dockets', DocketViewSet)
+router.register(r'courses', CourseViewSet)
 router.register(r'users', MyUserViewSet)
 router.register(r'version', VersionViewSet)
 router.register(r'schedules', ScheduleViewSet)
-router.register(r'courses', SpanViewSet)
+router.register(r'periods', PeriodViewSet)
+router.register(r'announcements', AnnouncementViewSet)
 
 
 urlpatterns = [

@@ -1,14 +1,15 @@
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 
-from .models import Schedule, Span
+from .models import Schedule, Period
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Schedule
+        fields = '__all__'
 
 
-class SpanSerializer(serializers.ModelSerializer):
+class PeriodSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Span
+        model = Period
+        fields = '__all__'

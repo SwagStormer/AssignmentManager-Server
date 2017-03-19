@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Task, MyUser, Docket, Version
+from .models import Task, MyUser, Course, Version
 # Register your models here.
 
 
@@ -15,9 +15,9 @@ class TaskAdmin(admin.ModelAdmin):
 admin.site.register(Task, TaskAdmin)
 
 
-class DocketAdmin(admin.ModelAdmin):
+class CourseAdmin(admin.ModelAdmin):
     pass
-admin.site.register(Docket, DocketAdmin)
+admin.site.register(Course, CourseAdmin)
 
 
 class VersionAdmin(admin.ModelAdmin):

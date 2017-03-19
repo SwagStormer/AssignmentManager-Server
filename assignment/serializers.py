@@ -1,32 +1,33 @@
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import MethodNotAllowed, ValidationError
 from django.utils import timezone
+from rest_framework.decorators import list_route, api_view
 
-from .models import MyUser, Docket, Task, Version
+from .models import MyUser, Course, Task, Version
 from .importance import importance_calc
-from assignment.scraper import request_grades
 
 
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
+        fields = '__all__'
 
     def create(self, validated_data):
         time_estimate = validated_data["time_estimate"]
         due_date = validated_data["due_date"]
         i = importance_calc(due_date, time_estimate)
         print(timezone.now())
-        docket = Task(
+        task = Task(
             importance=i[0],
             daily_time_amount=i[1],
             name=validated_data["name"],
             time_estimate=time_estimate,
             due_date=due_date,
-            docket=validated_data["docket"],
+            Course=validated_data["Course"],
             done_today=False
         )
-        docket.save()
-        return docket
+        task.save()
+        return task
 
 
 class TaskReadSerializer(serializers.ModelSerializer):
@@ -37,11 +38,14 @@ class TaskReadSerializer(serializers.ModelSerializer):
 class MyUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyUser
+        fields = '__all__'
 
     def create(self, validated_data):
         user = MyUser(
             email=validated_data['email'],
-            username=validated_data['username']
+            username=validated_data['username'],
+            sis_username=validated_data['sis_username'],
+            sis_password=validated_data['sis_password']
         )
         user.set_password(validated_data['password'])
         user.save()
@@ -54,49 +58,19 @@ class MyUserReadSerializer(serializers.ModelSerializer):
         exclude = ('password',)
 
 
-class DocketSerializer(serializers.ModelSerializer):
+class CourseSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Docket
-        exclude = ('user',)
+        model = Course
+        fields = '__all__'
 
     def create(self, validated_data):
-        request = self.context.get('request')
-
-        if request.user.sis_username and request.user.sis_password:
-            dockets = []
-            class_list = request_grades(request.user.sis_username,
-                                        request.user.sis_password, False)
-            for index, element in enumerate(class_list[1]):
-                d = Docket(
-                    name=class_list[0][index],
-                    grade=class_list[1][index],
-                    user=request.user
-                )
-                if len(Docket.objects.filter(user=request.user,
-                                             name=class_list[0][index])) is 0:
-                    d.save()
-                    dockets.append(d)
-            print(len(dockets))
-            if len(dockets) is 0:
-                raise ValidationError("You've done this before!")
-            else:
-                return dockets[0]
-        else:
-            docket = Docket(
-                name=validated_data["name"],
-                user=request.user
-            )
-            if len(Docket.objects.filter(user=request.user,
-                                         name=docket.name)) is not 0:
-                raise ValidationError("Already have that name")
-            else:
-                docket.save()
-                return docket
+        raise MethodNotAllowed()
 
 
 class VersionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Version
+        fields = '__all__'
 
     def create(self, validated_data):
         request = self.context.get('request')
