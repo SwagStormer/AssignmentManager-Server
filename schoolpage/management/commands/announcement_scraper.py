@@ -16,7 +16,7 @@ def get_announcements():
 
 
 def parse_page(page):
-    announcement_list: list = []
+    announcement_list = []
     announcements = page.xpath(announcement_xpath)
     for announcement in announcements:
         header = ''.join(announcement.xpath('./header/h2/a/text()'))
