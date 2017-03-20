@@ -52,7 +52,7 @@ class MyUserSerializer(serializers.ModelSerializer):
             user.save()
             return user
         else:
-            return ValidationError("Must have all fields")
+            raise ValidationError("Must have all fields")
 
 
 class MyUserReadSerializer(serializers.ModelSerializer):
