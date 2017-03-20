@@ -47,6 +47,13 @@ def format_grades(t):
     return grade_string
 
 
+def is_valid(sis_username, sis_password):
+    tree = request_page(sis_username, sis_password)
+    teachers = tree.xpath(
+        '//div[@class="tab-pane active"]//strong[@class="linkBlack"]/text()')
+    return len(teachers) is not 0
+
+
 def request_grades(username, password, form):
     page = request_page(username, password)
     grade_tuple = get_class(page)

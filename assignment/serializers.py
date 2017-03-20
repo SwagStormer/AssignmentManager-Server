@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import MethodNotAllowed, ValidationError
 from django.utils import timezone
 from rest_framework.decorators import list_route, api_view
-
+from .scraper import is_valid
 from .models import MyUser, Course, Task, Version
 from .importance import importance_calc
 
@@ -41,15 +41,18 @@ class MyUserSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        user = MyUser(
-            email=validated_data['email'],
-            username=validated_data['username'],
-            sis_username=validated_data['sis_username'],
-            sis_password=validated_data['sis_password']
-        )
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
+        if is_valid(validated_data['sis_username'], validated_data['sis_password']):
+            user = MyUser(
+                email=validated_data['email'],
+                username=validated_data['username'],
+                sis_username=validated_data['sis_username'],
+                sis_password=validated_data['sis_password']
+            )
+            user.set_password(validated_data['password'])
+            user.save()
+            return user
+        else:
+            return ValidationError("Must have all fields")
 
 
 class MyUserReadSerializer(serializers.ModelSerializer):
