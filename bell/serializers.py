@@ -10,7 +10,8 @@ class DateSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        if self.request.user.is_validated and self.request.user.is_superuser:
+        request = self.context.get('request')
+        if request.user.is_validated and request.user.is_superuser:
             d = Date(**validated_data)
             d.save()
             return d
@@ -24,7 +25,8 @@ class ScheduleSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, validated_data):
-        if self.request.user.is_validated and self.request.user.is_superuser:
+        request = self.context.get('request')
+        if request.user.is_validated and request.user.is_superuser:
             d = Date(**validated_data)
             d.save()
             return d
