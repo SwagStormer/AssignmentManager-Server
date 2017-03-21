@@ -20,7 +20,8 @@ class PeriodViewSet(viewsets.ModelViewSet):
     queryset = Period.objects.all()
 
     def get_queryset(self):
-        date = Date.objects.filter(date=datetime.now().strftime("%A"))
+        print(Date.objects.all())
+        date = Date.objects.filter(date=datetime.now().strftime("%A").upper())
         schedule = Schedule.objects.filter(date=date)[0]
         periods = Period.objects.filter(schedule=schedule)
         now = datetime.time()
