@@ -19,7 +19,7 @@ from django.contrib import admin
 from rest_framework import routers
 from rest_framework.authtoken import views
 from assignment.views import CourseViewSet, TaskViewSet, MyUserViewSet, VersionViewSet
-from bell.views import ScheduleViewSet, PeriodViewSet
+from bell.views import ScheduleViewSet, PeriodViewSet, DateViewSet
 from schoolpage.views import AnnouncementViewSet
 
 router = routers.DefaultRouter()
@@ -30,6 +30,7 @@ router.register(r'version', VersionViewSet)
 router.register(r'schedules', ScheduleViewSet)
 router.register(r'periods', PeriodViewSet)
 router.register(r'announcements', AnnouncementViewSet)
+router.register(r'dates', DateViewSet)
 
 
 urlpatterns = [
