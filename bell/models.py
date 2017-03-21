@@ -5,12 +5,24 @@ from django.db import models
 # Create your models here.
 
 
+class Date(models.Model):
+    DAYS = (
+        ('MONDAY', 'Monday'),
+        ('TUESDAY', 'Tuesday'),
+        ('WEDNESDAY', 'Wednesday'),
+        ('THURSDAY', 'Thursday'),
+        ('FRIDAY', 'Friday'),
+
+    )
+    date = models.CharField(choices=DAYS, max_length=9)
+
+
 class Schedule(models.Model):
     name = models.CharField(max_length=20)
     normal_schedule = models.BooleanField(default=True)
-    
     start_time = models.TimeField()
     end_time = models.TimeField()
+    date = models.ManyToManyField(Date)
 
     def __str__(self):
         return '%s' % self.name
