@@ -41,7 +41,7 @@ class PeriodSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context.get('request')
-        if request.user.is_validated and request.user.is_superuser:
+        if request.user.is_authenticated and request.user.is_superuser:
             d = Date(**validated_data)
             d.save()
             return d
