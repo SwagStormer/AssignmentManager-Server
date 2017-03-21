@@ -20,7 +20,7 @@ def parse_page(page):
     announcements = page.xpath(announcement_xpath)
     for announcement in announcements:
         header = ''.join(announcement.xpath('./header/h2/a/text()'))
-        content = ''.join(announcement.xpath('.//div[@class="field-items"]//text()'))
+        content = ''.join(announcement.xpath('.//div[@class="field-items even"]//text()'))
         image = ''.join(announcement.xpath('.//img/@src'))
 
         announcement_list.append(Announcement(header=header, content=content, image=image))
