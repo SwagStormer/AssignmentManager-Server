@@ -27,9 +27,9 @@ class ScheduleSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         request = self.context.get('request')
         if request.user.is_authenticated and request.user.is_superuser:
-            d = Date(**validated_data)
-            d.save()
-            return d
+            s = Schedule(**validated_data)
+            s.save()
+            return s
         else:
             raise ValidationError("Only admins can make these")
 
@@ -42,8 +42,8 @@ class PeriodSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         request = self.context.get('request')
         if request.user.is_authenticated and request.user.is_superuser:
-            d = Date(**validated_data)
-            d.save()
-            return d
+            p = Period(**validated_data)
+            p.save()
+            return p
         else:
             raise ValidationError("Only admins can make these")
