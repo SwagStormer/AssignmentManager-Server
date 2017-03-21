@@ -16,7 +16,7 @@ class DateSerializer(serializers.ModelSerializer):
             d.save()
             return d
         else:
-            return ValidationError("Only admins can make these")
+            raise ValidationError("Only admins can make these")
 
 
 class ScheduleSerializer(serializers.ModelSerializer):
@@ -31,7 +31,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
             d.save()
             return d
         else:
-            return ValidationError("Only admins can make these")
+            raise ValidationError("Only admins can make these")
 
 
 class PeriodSerializer(serializers.ModelSerializer):
