@@ -20,11 +20,8 @@ class PeriodViewSet(viewsets.ModelViewSet):
     queryset = Period.objects.all()
 
     def get_queryset(self):
-        print(Date.objects.all())
         date = Date.objects.filter(date=datetime.now().strftime("%A").upper())
         schedule = Schedule.objects.filter(date=date)[0]
         periods = Period.objects.filter(schedule=schedule)
-        now = datetime.now().time().replace(9)
-        print(now)
-
+        now = datetime.now().time()
         return [period for period in periods if period.start_time <= now <= period.end_time]
