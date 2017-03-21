@@ -16,6 +16,9 @@ class Date(models.Model):
     )
     date = models.CharField(choices=DAYS, max_length=9)
 
+    def __str__(self):
+        return '%s' % self.date
+
 
 class Schedule(models.Model):
     name = models.CharField(max_length=20)
