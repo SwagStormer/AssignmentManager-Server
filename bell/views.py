@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from datetime import datetime
 from .serializers import ScheduleSerializer, PeriodSerializer, DateSerializer
 from .models import Schedule, Period, Date
 # Create your views here.
@@ -17,3 +18,10 @@ class ScheduleViewSet(viewsets.ModelViewSet):
 class PeriodViewSet(viewsets.ModelViewSet):
     serializer_class = PeriodSerializer
     queryset = Period.objects.all()
+
+    def get_queryset(self):
+        date = Date.objects.filter(date=datetime.now().strftime("%A"))
+        schedule = Schedule.objects.filter(date=date)[0]
+        periods = Period.objects.filter(schedule=schedule)
+        now = datetime.time()
+        return [period for period in periods if period.start_time >= now >= period.end_time]
