@@ -14,14 +14,28 @@ class ScheduleViewSet(viewsets.ModelViewSet):
     serializer_class = ScheduleSerializer
     queryset = Schedule.objects.all()
 
+    def get_queryset(self):
+        q = self.request.query_params.get
+
+        if q('today'):
+            return Date.objects.filter(date=datetime.now().strftime("%A").upper())
+        else:
+            return Date.objects.all()
+
 
 class PeriodViewSet(viewsets.ModelViewSet):
     serializer_class = PeriodSerializer
     queryset = Period.objects.all()
 
     def get_queryset(self):
-        date = Date.objects.filter(date=datetime.now().strftime("%A").upper())
-        schedule = Schedule.objects.filter(date=date)[0]
-        periods = Period.objects.filter(schedule=schedule)
-        now = datetime.now().time()
-        return [period for period in periods if period.start_time <= now <= period.end_time]
+
+        q = self.request.query_params.get
+
+        if q('now'):
+            date = Date.objects.filter(date=datetime.now().strftime("%A").upper())
+            schedule = Schedule.objects.filter(date=date)[0]
+            periods = Period.objects.filter(schedule=schedule)
+            now = datetime.now().time()
+            return [period for period in periods if period.start_time <= now <= period.end_time]
+        else:
+            return Period.objects.all()
