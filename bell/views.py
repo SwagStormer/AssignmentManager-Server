@@ -27,9 +27,4 @@ class PeriodViewSet(viewsets.ModelViewSet):
         now = datetime.now().time().replace(9)
         print(now)
 
-        for period in periods:
-            print(period.start_time <= now)
-            print(period.end_time >= now)
-            print("end")
-
         return [period for period in periods if period.start_time <= now <= period.end_time]
