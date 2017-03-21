@@ -26,4 +26,8 @@ class PeriodViewSet(viewsets.ModelViewSet):
         periods = Period.objects.filter(schedule=schedule)
         now = datetime.now().time().replace(9)
         print(now)
-        return [period for period in periods if period.start_time >= now >= period.end_time]
+        for period in periods:
+            print(period.start_time >= now)
+            print(period.end_time <= now)
+
+        return []
