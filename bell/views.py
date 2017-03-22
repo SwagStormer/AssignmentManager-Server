@@ -38,7 +38,7 @@ class PeriodViewSet(viewsets.ModelViewSet):
             periods = Period.objects.filter(schedule=schedule)
             now = datetime.now().time()
             try:
-                ps = [period for period in periods if period.start_time <= now <= period.end_time][0]
+                ps = [period for period in periods if period.start_time <= now <= period.end_time]
             except IndexError:
                 raise Http404
 
