@@ -18,9 +18,9 @@ class ScheduleViewSet(viewsets.ModelViewSet):
         q = self.request.query_params.get
 
         if q('today'):
-            return Date.objects.filter(date=datetime.now().strftime("%A").upper())
+            return Schedule.objects.filter(date=datetime.now().strftime("%A").upper())
         else:
-            return Date.objects.all()
+            return Schedule.objects.all()
 
 
 class PeriodViewSet(viewsets.ModelViewSet):
