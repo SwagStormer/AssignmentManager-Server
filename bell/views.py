@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from datetime import datetime
 from .serializers import ScheduleSerializer, PeriodSerializer, DateSerializer
 from .models import Schedule, Period, Date
+from django.shortcuts import get_object_or_404
 # Create your views here.
 
 
@@ -40,6 +41,6 @@ class PeriodViewSet(viewsets.ModelViewSet):
         elif q('today'):
             date = Date.objects.filter(date=datetime.now().strftime("%A").upper())
             schedule = Schedule.objects.filter(date=date)[0]
-            return Period.objects.filter(schedule=schedule)
+            get_object_or_404(Period.objects.filter(schedule=schedule))
         else:
             return Period.objects.all()

@@ -5,7 +5,6 @@ from .importance import importance_calc
 from rest_framework.exceptions import ValidationError, NotAuthenticated
 from .serializers import TaskSerializer, TaskReadSerializer, CourseSerializer, MyUserSerializer, MyUserReadSerializer, VersionSerializer
 from .models import Course, Task, MyUser, Version
-from assignment.scraper import request_grades
 from assignment.management.commands.update_grades import update_or_create_grades
 # Create your views here.
 
