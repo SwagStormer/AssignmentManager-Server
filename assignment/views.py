@@ -6,7 +6,7 @@ from rest_framework.exceptions import ValidationError, NotAuthenticated
 from .serializers import TaskSerializer, TaskReadSerializer, CourseSerializer, MyUserSerializer, MyUserReadSerializer, VersionSerializer
 from .models import Course, Task, MyUser, Version
 from assignment.scraper import request_grades
-from assignment.management.commands.update_grades import update_grades
+from assignment.management.commands.update_grades import update_or_create_grades
 # Create your views here.
 
 
@@ -67,28 +67,10 @@ class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
 
     @list_route(methods=["POST"])
-    def initialize(self, request):
-        courses = []
-        class_list = request_grades(request.user.sis_username,
-                                    request.user.sis_password, False)
-        print(class_list)
-        for index, element in enumerate(class_list[1]):
-            d = Course(
-                name=class_list[0][index],
-                grade=class_list[1][index],
-                user=request.user
-            )
-            if len(Course.objects.filter(user=request.user,
-                                         name=class_list[0][index])) is 0:
-                    d.save()
-                    courses.append(d)
-        return Response({"message": "Finished!"})
-
-    @list_route(methods=["POST"])
     def update_grades(self, request):
         courses = Course.objects.filter(user=request.user.id)
         serializer = self.get_serializer(courses, many=True)
-        update_grades(request.user)
+        update_or_create_grades(request.user)
         return Response(serializer.data)
 
     def get_queryset(self):

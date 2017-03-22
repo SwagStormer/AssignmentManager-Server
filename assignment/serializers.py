@@ -3,6 +3,7 @@ from rest_framework.exceptions import MethodNotAllowed, ValidationError
 from django.utils import timezone
 from rest_framework.decorators import list_route, api_view
 from .scraper import is_valid
+from .management.commands.update_grades import update_or_create_grades
 from .models import MyUser, Course, Task, Version
 from .importance import importance_calc
 
@@ -50,6 +51,7 @@ class MyUserSerializer(serializers.ModelSerializer):
             )
             user.set_password(validated_data['password'])
             user.save()
+            update_or_create_grades(user)
             return user
         else:
             raise ValidationError("Must have all fields")
