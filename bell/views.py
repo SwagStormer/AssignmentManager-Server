@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from datetime import datetime
 from .serializers import ScheduleSerializer, PeriodSerializer, DateSerializer
 from .models import Schedule, Period, Date
-from django.shortcuts import get_object_or_404
+from django.http import Http404
 # Create your views here.
 
 
@@ -37,10 +37,14 @@ class PeriodViewSet(viewsets.ModelViewSet):
             schedule = Schedule.objects.filter(date=date)[0]
             periods = Period.objects.filter(schedule=schedule)
             now = datetime.now().time()
-            return get_object_or_404([period for period in periods if period.start_time <= now <= period.end_time])
+            try:
+                ps = [period for period in periods if period.start_time <= now <= period.end_time][0]
+            except IndexError:
+                raise Http404
+
         elif q('today'):
             date = Date.objects.filter(date=datetime.now().strftime("%A").upper())
             schedule = Schedule.objects.filter(date=date)[0]
-            return Period.objects.filter(schedule=schedule)
+            Period.objects.filter(schedule=schedule)
         else:
             return Period.objects.all()
