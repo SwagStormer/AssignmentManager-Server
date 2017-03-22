@@ -42,9 +42,11 @@ class PeriodViewSet(viewsets.ModelViewSet):
             except IndexError:
                 raise Http404
 
+            return ps
+
         elif q('today'):
             date = Date.objects.filter(date=datetime.now().strftime("%A").upper())
             schedule = Schedule.objects.filter(date=date)[0]
-            Period.objects.filter(schedule=schedule)
+            return Period.objects.filter(schedule=schedule)
         else:
             return Period.objects.all()
