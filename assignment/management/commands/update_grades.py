@@ -10,6 +10,7 @@ def update_or_create_grades(user):
 
         try:
             course = Course.objects.filter(name=grades[0][index], user=user.id)[0]
+            course.grade = grades[1][index]
         except IndexError:
             course = Course(grade=grades[1][index], name=grades[0][index], user=user)
 
