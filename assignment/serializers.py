@@ -11,21 +11,15 @@ from .importance import importance_calc
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = '__all__'
+        exclude = ('snooze_until', 'is_finished')
 
     def create(self, validated_data):
-        time_estimate = validated_data["time_estimate"]
         due_date = validated_data["due_date"]
-        i = importance_calc(due_date, time_estimate)
         print(timezone.now())
         task = Task(
-            importance=i[0],
-            daily_time_amount=i[1],
             name=validated_data["name"],
-            time_estimate=time_estimate,
             due_date=due_date,
-            Course=validated_data["Course"],
-            done_today=False
+            course=validated_data["course"],
         )
         task.save()
         return task
@@ -34,6 +28,7 @@ class TaskSerializer(serializers.ModelSerializer):
 class TaskReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
+        fields = '__all__'
 
 
 class MyUserSerializer(serializers.ModelSerializer):

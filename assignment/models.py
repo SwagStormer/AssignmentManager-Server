@@ -23,12 +23,10 @@ class Course(models.Model):
 
 class Task(models.Model):
     name = models.CharField(max_length=30)
-    time_estimate = models.IntegerField()
-    importance = models.IntegerField(null=True, blank=True)
-    done_today = models.BooleanField(default=False)
     due_date = models.DateField()
-    daily_time_amount = models.IntegerField(null=True, blank=True)
-    docket = models.ForeignKey(Course)
+    is_finished = models.BooleanField(default=False)
+    snooze_until = models.DateTimeField(null=True)
+    course = models.ForeignKey(Course)
 
     def __str__(self):
         return '%s' % self.name

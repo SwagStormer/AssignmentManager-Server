@@ -1,11 +1,14 @@
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
-from .importance import importance_calc
+from django.http.response import HttpResponseNotAllowed, HttpResponse, HttpResponseBadRequest
+from datetime import datetime
 from rest_framework.exceptions import ValidationError, NotAuthenticated
+import json
 from .serializers import TaskSerializer, TaskReadSerializer, CourseSerializer, MyUserSerializer, MyUserReadSerializer, VersionSerializer
 from .models import Course, Task, MyUser, Version
 from assignment.management.commands.update_grades import update_or_create_grades
+from django.shortcuts import get_object_or_404
 # Create your views here.
 
 
@@ -14,29 +17,33 @@ class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
 
     @detail_route(methods=["POST"])
-    def done_today(self, request, pk=None):
-        time_amount = request.data.get('time_amount')
-        if not time_amount:
-            if time_amount is not 0:
-                raise ValidationError("Wai you do this")
-        task = Task.objects.filter(id=pk)[0]
-        if task.done_today:
-            raise ValidationError("Task is finished for the day!")
-        else:
-            if task.daily_time_amount is time_amount:
-                task.time_estimate -= task.daily_time_amount
-            elif task.time_estimate - time_amount is 0:
-                task.delete()
-                return Response({"Status": "Deleted"}, status=200)
-            else:
-                task.time_estimate -= time_amount
-                i = importance_calc(task.due_date, task.time_estimate)
-                task.daily_time_amount = i[1]
-                task.importance = i[0]
+    def finish(self, request, pk=None):
+        task = get_object_or_404(Task.objects.filter(id=pk))
+        try:
+            print()
+            course = Course.objects.filter(user=request.user, id=task.course.id)[0]
+        except IndexError:
+            return Response(status=401)
+        task.is_finished = True
+        task.save()
+        return HttpResponse(status=200)
 
-            task.done_today = True
-            task.save()
-            return Response({"Status": "Finished"}, status=200)
+    @detail_route(methods=["POST"])
+    def snooze(self, request, pk=None):
+        task = get_object_or_404(Task.objects.filter(id=pk))
+        try:
+            course = Course.objects.filter(user=request.user, id=task.course.id)[0]
+        except IndexError:
+            return Response(status=401)
+        try:
+            body_unicode = request.body.decode('utf-8')
+            body = json.loads(body_unicode)
+            content = body['snooze_until']
+            task.snooze_until = content
+        except KeyError:
+            return HttpResponseBadRequest("Your json is funky. plz fix")
+        task.save()
+        return HttpResponse(status=200)
 
     def get_serializer_class(self):
         if self.request.method == "POST":
@@ -45,20 +52,12 @@ class TaskViewSet(viewsets.ModelViewSet):
             return TaskReadSerializer
 
     def get_queryset(self):
-        if self.request.user.is_anonymous():
-            raise NotAuthenticated()
-        elif self.request.query_params.get('Course'):
-            q = int(self.request.query_params.get('Course'))
-            d = Course.objects.filter(id=q, user=self.request.user)
-            return Task.objects.filter(Course=d)
-        else:
-            print(self.request.user)
-            d = Course.objects.filter(user=self.request.user)
-            return_array = []
-            for course in d:
-                a = Task.objects.filter(Course=Course, done_today=False)
-                return_array += a
-            return return_array
+        if self.request.user.is_authenticated:
+            try:
+                return Task.objects.filter(id=self.kwargs["pk"])
+            except Exception:
+                courses = Course.objects.filter(user=self.request.user)
+                return [Task.objects.filter(course=c) for c in courses]
 
 
 class CourseViewSet(viewsets.ModelViewSet):
