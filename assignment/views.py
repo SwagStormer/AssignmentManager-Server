@@ -54,8 +54,10 @@ class TaskViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_authenticated:
             try:
+                print("Hello")
                 return Task.objects.filter(id=self.kwargs["pk"])
             except Exception:
+                print("I'm here")
                 courses = Course.objects.filter(user=self.request.user)
                 return [Task.objects.filter(course=c) for c in courses]
 
