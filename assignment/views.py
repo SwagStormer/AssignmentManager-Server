@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.response import Response
-from django.http.response import HttpResponseNotAllowed, HttpResponse, HttpResponseBadRequest
+from django.http.response import HttpResponseNotAllowed, HttpResponse, HttpResponseBadRequest, Http404
 from datetime import datetime
 from rest_framework.exceptions import ValidationError, NotAuthenticated
 import json
@@ -53,13 +53,10 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            try:
-                print("Hello")
-                return Task.objects.filter(id=self.kwargs["pk"])
-            except Exception:
-                print("I'm here")
-                courses = Course.objects.filter(user=self.request.user)
-                return [Task.objects.filter(course=c) for c in courses]
+            courses = Course.objects.filter(user=self.request.user.id)
+            return Task.objects.filter(course=courses)
+        else:
+            return Http404
 
 
 class CourseViewSet(viewsets.ModelViewSet):
