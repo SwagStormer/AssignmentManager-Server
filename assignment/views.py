@@ -58,7 +58,7 @@ class TaskViewSet(viewsets.ModelViewSet):
             print(Task.objects.filter(course=courses))
             return Task.objects.filter(course=courses)
         else:
-            return Http404()
+            return Task.objects.none()
 
 
 class CourseViewSet(viewsets.ModelViewSet):
