@@ -34,7 +34,7 @@ class PeriodViewSet(viewsets.ModelViewSet):
 
         if q('now'):
             date = Date.objects.filter(date=datetime.now().strftime("%A").upper())
-            schedule = Schedule.objects.filter(date=date)[0]
+            schedule = Schedule.objects.filter(date=date)
             periods = Period.objects.filter(schedule=schedule)
             now = datetime.now().time()
             try:
@@ -46,7 +46,7 @@ class PeriodViewSet(viewsets.ModelViewSet):
 
         elif q('today'):
             date = Date.objects.filter(date=datetime.now().strftime("%A").upper())
-            schedule = Schedule.objects.filter(date=date)[0]
+            schedule = Schedule.objects.filter(date=date)
             return Period.objects.filter(schedule=schedule)
         else:
             return Period.objects.all()
