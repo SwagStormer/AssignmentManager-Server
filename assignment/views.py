@@ -53,7 +53,7 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            q = self.request.query_params.get()
+            q = self.request.query_params.get
             if q('course'):
                 courses = Course.objects.filter(user=self.request.user.id, course=q('course'))
             else:
