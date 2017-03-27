@@ -58,7 +58,7 @@ class TaskViewSet(viewsets.ModelViewSet):
                 courses = Course.objects.filter(user=self.request.user.id, id=q('course'))
             else:
                 courses = Course.objects.filter(user=self.request.user.id)
-            return Task.objects.filter(course=courses)
+            return Task.objects.filter(course=courses, is_finished=False)
         else:
             return Task.objects.none()
 
