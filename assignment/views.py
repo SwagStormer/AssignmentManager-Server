@@ -54,7 +54,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_authenticated:
             courses = Course.objects.filter(user=self.request.user.id)
-            return Task.objects.filter(course=courses, is_finished=False)
+            return Task.objects.filter(course=courses)
         else:
             return Task.objects.none()
 
