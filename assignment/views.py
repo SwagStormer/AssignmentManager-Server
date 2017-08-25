@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route, list_route
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .serializers import TaskSerializer, TaskReadSerializer, CourseSerializer, MyUserSerializer, MyUserReadSerializer, VersionSerializer
 from .models import Course, Task, MyUser, Version
@@ -33,13 +34,7 @@ class TaskViewSet(viewsets.ModelViewSet):
 class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
-
-    @list_route(methods=["POST"])
-    def update_grades(self, request):
-        courses = Course.objects.filter(user=request.user.id)
-        serializer = self.get_serializer(courses, many=True)
-        update_or_create_grades(request.user)
-        return Response(serializer.data)
+    permission_classes = [IsAuthenticated, ]
 
     def get_queryset(self):
         request = self.request
@@ -54,6 +49,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 class MyUserViewSet(viewsets.ModelViewSet):
     serializer_class = MyUserSerializer
     queryset = MyUser.objects.all()
+    permission_classes = [IsAuthenticated, ]
 
     def get_serializer_class(self):
         if self.request.method == "POST":
