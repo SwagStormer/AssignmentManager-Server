@@ -5,21 +5,11 @@ from .models import Task, MyUser, Course, Version
 # Register your models here.
 
 
-class UserAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(MyUser, UserAdmin)
+admin.site.register(MyUser)
 
 
-class TaskAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(Task, TaskAdmin)
+admin.site.register(Task)
 
+admin.site.register(Course)
 
-class CourseAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(Course, CourseAdmin)
-
-
-class VersionAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(Version, VersionAdmin)
+admin.site.register(Version)
