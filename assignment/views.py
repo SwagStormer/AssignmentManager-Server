@@ -41,7 +41,7 @@ class CourseViewSet(viewsets.ModelViewSet):
         q = self.request.query_params.get
         queryset = Course.objects.filter(user=self.request.user.id)
 
-        if q("cached"):
+        if not q("cached"):
             update_or_create_grades(request.user)
         return queryset
 
