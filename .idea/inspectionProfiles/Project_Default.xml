@@ -1,0 +1,37 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="24">
+            <item index="0" class="java.lang.String" itemvalue="coverage" />
+            <item index="1" class="java.lang.String" itemvalue="django_migration_testcase" />
+            <item index="2" class="java.lang.String" itemvalue="pyfcm" />
+            <item index="3" class="java.lang.String" itemvalue="dice" />
+            <item index="4" class="java.lang.String" itemvalue="django-storages" />
+            <item index="5" class="java.lang.String" itemvalue="gunicorn" />
+            <item index="6" class="java.lang.String" itemvalue="newrelic" />
+            <item index="7" class="java.lang.String" itemvalue="tqdm" />
+            <item index="8" class="java.lang.String" itemvalue="boto3" />
+            <item index="9" class="java.lang.String" itemvalue="django-memoize" />
+            <item index="10" class="java.lang.String" itemvalue="django" />
+            <item index="11" class="java.lang.String" itemvalue="drf-extensions" />
+            <item index="12" class="java.lang.String" itemvalue="django-ses" />
+            <item index="13" class="java.lang.String" itemvalue="freezegun" />
+            <item index="14" class="java.lang.String" itemvalue="django-redis-sessions" />
+            <item index="15" class="java.lang.String" itemvalue="django-redis" />
+            <item index="16" class="java.lang.String" itemvalue="markdown" />
+            <item index="17" class="java.lang.String" itemvalue="stripe" />
+            <item index="18" class="java.lang.String" itemvalue="model_mommy" />
+            <item index="19" class="java.lang.String" itemvalue="asgi_redis" />
+            <item index="20" class="java.lang.String" itemvalue="txredisapi" />
+            <item index="21" class="java.lang.String" itemvalue="uwsgi" />
+            <item index="22" class="java.lang.String" itemvalue="djangorestframework" />
+            <item index="23" class="java.lang.String" itemvalue="django-accounts" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

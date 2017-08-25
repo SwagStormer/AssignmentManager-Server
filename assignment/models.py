@@ -25,7 +25,7 @@ class Task(models.Model):
     name = models.CharField(max_length=30)
     due_date = models.DateField()
     is_finished = models.BooleanField(default=False)
-    snooze_until = models.DateTimeField(null=True)
+    snooze_until = models.DateTimeField(null=True, blank=True)
     course = models.ForeignKey(Course)
 
     def __str__(self):

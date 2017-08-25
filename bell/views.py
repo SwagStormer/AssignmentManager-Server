@@ -1,19 +1,22 @@
 from rest_framework import viewsets
 from datetime import datetime
+
+from bell.permissions import IsAdminOrReadOnly
 from .serializers import ScheduleSerializer, PeriodSerializer, DateSerializer
 from .models import Schedule, Period, Date
-from django.http import Http404
 # Create your views here.
 
 
 class DateViewSet(viewsets.ModelViewSet):
     serializer_class = DateSerializer
     queryset = Date.objects.all()
+    permission_classes = [IsAdminOrReadOnly, ]
 
 
 class ScheduleViewSet(viewsets.ModelViewSet):
     serializer_class = ScheduleSerializer
     queryset = Schedule.objects.all()
+    permission_classes = [IsAdminOrReadOnly, ]
 
     def get_queryset(self):
         q = self.request.query_params.get
@@ -27,23 +30,17 @@ class ScheduleViewSet(viewsets.ModelViewSet):
 class PeriodViewSet(viewsets.ModelViewSet):
     serializer_class = PeriodSerializer
     queryset = Period.objects.all()
+    permission_classes = [IsAdminOrReadOnly, ]
 
     def get_queryset(self):
-
         q = self.request.query_params.get
-
         if q('now'):
             date = Date.objects.filter(date=datetime.now().strftime("%A").upper())
             schedule = Schedule.objects.filter(date=date)
-            periods = Period.objects.filter(schedule=schedule)
             now = datetime.now().time()
-            try:
-                ps = [period for period in periods if period.start_time <= now <= period.end_time]
-            except IndexError:
-                raise Http404
-
-            return ps
-
+            periods = Period.objects.filter(
+                schedule=schedule, start_time__lte=now, end_time__gte=now)
+            return periods
         elif q('today'):
             date = Date.objects.filter(date=datetime.now().strftime("%A").upper())
             schedule = Schedule.objects.filter(date=date)

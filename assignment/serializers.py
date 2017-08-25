@@ -1,28 +1,15 @@
 from rest_framework import serializers
 from rest_framework.exceptions import MethodNotAllowed, ValidationError
 from django.utils import timezone
-from rest_framework.decorators import list_route, api_view
 from .scraper import is_valid
 from .management.commands.update_grades import update_or_create_grades
 from .models import MyUser, Course, Task, Version
-from .importance import importance_calc
 
 
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         exclude = ('snooze_until', 'is_finished')
-
-    def create(self, validated_data):
-        due_date = validated_data["due_date"]
-        print(timezone.now())
-        task = Task(
-            name=validated_data["name"],
-            due_date=due_date,
-            course=validated_data["course"],
-        )
-        task.save()
-        return task
 
 
 class TaskReadSerializer(serializers.ModelSerializer):
