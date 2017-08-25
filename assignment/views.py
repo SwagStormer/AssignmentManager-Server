@@ -40,8 +40,8 @@ class CourseViewSet(viewsets.ModelViewSet):
         request = self.request
         q = self.request.query_params.get
         queryset = Course.objects.filter(user=self.request.user.id)
-        print(q("cached"))
-        if not q("cached"):
+        if q("cached") == "false":
+            print("I am workin!")
             update_or_create_grades(request.user)
         return queryset
 
