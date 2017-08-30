@@ -21,9 +21,8 @@ class TaskViewSet(viewsets.ModelViewSet):
             return TaskReadSerializer
 
     def get_queryset(self):
-        q = self.request.query_params.get
         courses = Course.objects.filter(user=self.request.user.id)
-        return Task.objects.filter(course=courses, is_finished=False)
+        return Task.objects.filter(course__in=courses, is_finished=False)
 
 
 class CourseViewSet(viewsets.ModelViewSet):
