@@ -6,14 +6,12 @@ from assignment.scraper import request_grades
 
 def update_or_create_grades(user):
     grades = request_grades(user.sis_username, user.sis_password, False)
-    for index, element in enumerate(grades[1]):
-
+    for grade in grades:
         try:
-            course = Course.objects.filter(name=grades[0][index], user=user.id)[0]
-            course.grade = grades[1][index]
+            course = Course.objects.filter(name=grade.course_name, user=user.id).first()
+            course.grade = grade.grade
         except IndexError:
-            course = Course(grade=grades[1][index], name=grades[0][index], user=user)
-
+            course = Course(grade=grade.grade, name=grade.course_name, user=user)
         course.save()
 
 

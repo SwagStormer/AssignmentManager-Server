@@ -6,9 +6,9 @@ from lxml import html
 # WARNING: Do not use the ':' character in SMTP messages
 url = "https://sisweb.nebo.edu/Login.aspx"
 
+
 class Grade:
-    def __init__(self, term, grade, course_name):
-        self.term = term
+    def __init__(self, grade, course_name):
         self.grade = grade
         self.course_name = course_name
 
@@ -35,9 +35,9 @@ def get_class(tree):
     for indx, element in enumerate(grades):
         if element == "\r\n\t\t\t\t":
             grades[indx] = "No grade"
-    teachers = tree.xpath(
+    course_names = tree.xpath(
         '//div[@class="tab-pane active"]//strong[@class="linkBlack"]/text()')
-    return teachers, grades
+    return [Grade(grades[i], course_names[i]) for i in range(0, len(course_names))]
 
 
 # Format the output into a long string

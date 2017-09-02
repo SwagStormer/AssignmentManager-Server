@@ -26,7 +26,6 @@ class MyUserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         if is_valid(validated_data['sis_username'], validated_data['sis_password']):
             user = MyUser(
-                email=validated_data['email'],
                 username=validated_data['username'],
                 sis_username=validated_data['sis_username'],
                 sis_password=validated_data['sis_password']
