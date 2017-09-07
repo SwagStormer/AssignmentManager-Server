@@ -22,7 +22,7 @@ class Date(models.Model):
 
 class Schedule(models.Model):
     name = models.CharField(max_length=20)
-    normal_schedule = models.BooleanField(default=True)
+    schedule_active = models.DateField(null=True, blank=True)
     start_time = models.TimeField()
     end_time = models.TimeField()
     date = models.ManyToManyField(Date)

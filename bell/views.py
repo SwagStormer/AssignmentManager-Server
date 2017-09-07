@@ -20,11 +20,16 @@ class ScheduleViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         q = self.request.query_params.get
-
+        queryset = Schedule.objects.all()
         if q('today'):
-            return Schedule.objects.filter(date=datetime.now().strftime("%A").upper())
-        else:
-            return Schedule.objects.all()
+            abnormal = queryset.filter(
+                schedule_active__isnull=False,
+                schedule_active=datetime.now())
+            if abnormal.count() == 1:
+                queryset = abnormal
+            else:
+                queryset = queryset.filter(date__date=datetime.now().strftime("%A").upper())
+        return queryset
 
 
 class PeriodViewSet(viewsets.ModelViewSet):
@@ -34,16 +39,20 @@ class PeriodViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         q = self.request.query_params.get
-        if q('now'):
-            date = Date.objects.filter(date=datetime.now().strftime("%A").upper())
-            schedule = Schedule.objects.filter(date=date)
-            now = datetime.now().time()
-            periods = Period.objects.filter(
-                schedule=schedule, start_time__lte=now, end_time__gte=now)
-            return periods
-        elif q('today'):
-            date = Date.objects.filter(date=datetime.now().strftime("%A").upper())
-            schedule = Schedule.objects.filter(date=date)
-            return Period.objects.filter(schedule=schedule)
+        queryset = Period.objects.all()
+
+        date = Date.objects.filter(date=datetime.now().strftime("%A").upper())
+        schedules = Schedule.objects.filter(
+            schedule_active__isnull=False,
+            schedule_active=datetime.now())
+        if schedules.count() == 1:
+            schedule = schedules.first()
         else:
-            return Period.objects.all()
+            schedule = Schedule.objects.get(date=date)
+
+        if q('now'):
+            queryset = queryset.filter(
+                schedule=schedule, start_time__lte=datetime.now(), end_time__gte=datetime.now())
+        elif q('today'):
+            queryset = queryset.filter(schedule=schedule)
+        return queryset
