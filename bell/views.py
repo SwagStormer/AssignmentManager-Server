@@ -48,7 +48,7 @@ class PeriodViewSet(viewsets.ModelViewSet):
         if schedules.count() == 1:
             schedule = schedules.first()
         else:
-            schedule = Schedule.objects.get(date=date)
+            schedule = Schedule.objects.filter(schedule_active__isnull=True, date=date).first()
 
         if q('now'):
             queryset = queryset.filter(

@@ -30,8 +30,6 @@ def request_page(username, password):
 def get_class(tree):
     grades = tree.xpath(
         '//span[@class="academicMark" or not(normalize-space(.))]/text()')
-    # TODO add query to student object to find the users student account
-    # TODO pull grades for the specific user
     for indx, element in enumerate(grades):
         if element == "\r\n\t\t\t\t":
             grades[indx] = "No grade"

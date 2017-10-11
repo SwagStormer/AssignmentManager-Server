@@ -16,6 +16,7 @@ def get_announcements():
     tree.xpath(announcement_xpath)
     return parse_page(tree)
 
+
 def parse_page(page):
     announcement_list = []
     announcements = page.xpath(announcement_xpath)
@@ -23,7 +24,6 @@ def parse_page(page):
         header = ''.join(announcement.xpath('./header/h2/a/text()'))
         content = ''.join(announcement.xpath('.//div[@class="content"]//p/text()'))
         image = ''.join(announcement.xpath('.//img/@src'))
-
         announcement_list.append(Announcement(header=header, content=content, image=image))
 
     return announcement_list
