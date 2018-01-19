@@ -1,9 +1,8 @@
 from rest_framework import serializers
 from rest_framework.exceptions import MethodNotAllowed, ValidationError
-from django.utils import timezone
 from .scraper import is_valid
 from .management.commands.update_grades import update_or_create_grades
-from .models import MyUser, Course, Task, Version
+from .models import MyUser, Course, Task
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -52,13 +51,3 @@ class CourseSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         raise MethodNotAllowed()
 
-
-class VersionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Version
-        fields = '__all__'
-
-    def create(self, validated_data):
-        request = self.context.get('request')
-        if not request.user.is_staff:
-            raise ValidationError("Only Admins can do this")

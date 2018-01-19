@@ -42,8 +42,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'assignment',
-    'bell',
-    'schoolpage',
     'corsheaders',
 ]
 
@@ -52,7 +50,6 @@ AUTH_USER_MODEL = 'assignment.MyUser'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-
     ]
 }
 

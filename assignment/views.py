@@ -1,9 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from .serializers import (TaskSerializer, TaskReadSerializer, CourseSerializer,
-                          MyUserSerializer, MyUserReadSerializer,
-                          VersionSerializer)
-from .models import Course, Task, MyUser, Version
+                          MyUserSerializer, MyUserReadSerializer,)
+from .models import Course, Task, MyUser
 from assignment.management.commands.update_grades import update_or_create_grades
 # Create your views here.
 
@@ -45,13 +44,7 @@ class MyUserViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.request.method == "POST":
             return MyUserSerializer
-        else:
-            return MyUserReadSerializer
+        return MyUserReadSerializer
 
     def get_queryset(self):
         return self.queryset.filter(id=self.request.user.id)
-
-
-class VersionViewSet(viewsets.ModelViewSet):
-    serializer_class = VersionSerializer
-    queryset = Version.objects.all()
